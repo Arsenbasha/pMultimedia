@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.paredesleandro.pmultimedia.Fichero
 import com.paredesleandro.pmultimedia.FicherosAdapter
 import com.paredesleandro.pmultimedia.R
 import com.paredesleandro.pmultimedia.databinding.FragmentRecorderBinding
@@ -39,7 +38,7 @@ class RecorderFragment : Fragment() {
     private lateinit var crono: Chronometer
     var output: String? = null
     private var isStop: Boolean = false
-    private var listFicheros = mutableListOf<Fichero>()
+    private var listFicheros = mutableListOf<String>()
     private lateinit var ficherosAdapter: FicherosAdapter
 
     private lateinit var recorder: MediaRecorder
@@ -63,10 +62,9 @@ class RecorderFragment : Fragment() {
         stop = recorderBinding.stop
         pause = recorderBinding.pause
         crono = recorderBinding.chronometer
-
+        fullList()
         if (permisosOk) {
             prepare()
-            lista()
             start.setOnClickListener {
                 if (!isPause) start()
                 else reanudar()
@@ -93,7 +91,7 @@ class RecorderFragment : Fragment() {
         dir = getOutputDirectory()
         if (dir.exists()) {
             val count = dir.listFiles().size
-            output = getOutputDirectory().absolutePath + "nombre.mp3"
+            output = getOutputDirectory().absolutePath + "/grabacion$count.mp3"
         }
         recorder = MediaRecorder()
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -101,13 +99,21 @@ class RecorderFragment : Fragment() {
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
         Toast.makeText(context, "$output", Toast.LENGTH_SHORT).show()
         recorder.setOutputFile(output)
-        fullList()
+
 
     }
 
     private fun fullList() {
-        dir.walkTopDown().forEach { listFicheros.add(Fichero(it.name)) }
-        Log.d("INFO", "lista de ficheros $listFicheros")
+        listFicheros.clear()
+        val dir = getOutputDirectory()
+        dir.walkTopDown().forEach {
+            if (it.isFile) listFicheros.add(it.name)
+        }
+        listFicheros.forEach {
+            Log.d("INFO", "lista de ficherosd  ${it}")
+        }
+        lista()
+
     }
 
     private fun start() {
@@ -127,7 +133,6 @@ class RecorderFragment : Fragment() {
         crono.visibility = View.VISIBLE
         crono.base = SystemClock.elapsedRealtime();
         crono.start()
-
     }
 
 
@@ -139,7 +144,10 @@ class RecorderFragment : Fragment() {
         cronoMetro = 0
         isStop = true
         isPause = false
+        fullList()
         prepare()
+
+
     }
 
 
@@ -193,7 +201,7 @@ class RecorderFragment : Fragment() {
 
     fun getOutputDirectory(): File {
         val mediaDir = activity?.externalMediaDirs?.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+            File(it, resources.getString(R.string.app_name) + "/grabaciones").apply { mkdirs() }
         }
         return if (mediaDir != null && mediaDir.exists()) mediaDir else activity?.filesDir!!
     }

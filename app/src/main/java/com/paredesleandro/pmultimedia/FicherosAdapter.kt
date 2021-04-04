@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class FicherosAdapter(private val ficheroMutableList: MutableList<Fichero>) :
+class FicherosAdapter(private val ficheroMutableList: MutableList<String>) :
     RecyclerView.Adapter<FicherosAdapter.FicheroViewHolder>() {
     inner class FicheroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nombre: TextView = view.findViewById(R.id.nameAudio) }
@@ -20,6 +20,6 @@ class FicherosAdapter(private val ficheroMutableList: MutableList<Fichero>) :
     override fun getItemCount() = ficheroMutableList.size
 
     override fun onBindViewHolder(holder: FicheroViewHolder, position: Int) {
-        holder.nombre.text = ficheroMutableList[position].nombre
+        holder.nombre.text = ficheroMutableList[position]
     }
 }
