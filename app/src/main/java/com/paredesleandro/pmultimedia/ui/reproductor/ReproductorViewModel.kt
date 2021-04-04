@@ -87,5 +87,4 @@ class ReproductorViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun ruta(): String =
         "android.resource://" + getApplication<Application>().packageName + "/" + R.raw.video
-
 }

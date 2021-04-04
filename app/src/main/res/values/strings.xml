@@ -15,7 +15,11 @@
 
     //Reproductor
     <string name="pelicula">Test video</string>
+    <string name="reproducir">Reproducir</string>
     <string name="play">Reanudar</string>
     <string name="pause">Pausar</string>
     <string name="stop">Stop</string>
+
+    //Camara
+    <string name="tomar_foto">Tomar Foto</string>
 </resources>
